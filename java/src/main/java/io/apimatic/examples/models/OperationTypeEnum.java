@@ -32,8 +32,7 @@ public enum OperationTypeEnum {
     /**
      * Represents the divide operator
      */
-    DIVIDE;
-
+    DIVIDE;
 
     private static TreeMap<String, OperationTypeEnum> valueMap = new TreeMap<>();
     private String value;
