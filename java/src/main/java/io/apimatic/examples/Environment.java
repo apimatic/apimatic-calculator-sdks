@@ -17,8 +17,7 @@ public enum Environment {
     /**
      * This environment connect to the LIVE calculator API
      */
-    PRODUCTION;
-
+    PRODUCTION;
 
     private static TreeMap<String, Environment> valueMap = new TreeMap<>();
     private String value;

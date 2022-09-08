@@ -14,8 +14,7 @@ import java.util.TreeMap;
  * Server to be used.
  */
 public enum Server {
-    CALCULATOR;
-
+    CALCULATOR;
 
     private static TreeMap<String, Server> valueMap = new TreeMap<>();
     private String value;
