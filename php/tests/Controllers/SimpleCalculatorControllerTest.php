@@ -65,7 +65,7 @@ class SimpleCalculatorControllerTest extends TestCase
  
 
         $this->assertEqualsWithDelta(
-            20,
+            20.0,
             $result,
             ASSERT_PRECISION,
             "Response does not match expected value"

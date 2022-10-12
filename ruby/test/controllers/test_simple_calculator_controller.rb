@@ -28,7 +28,7 @@ class SimpleCalculatorControllerTests < ControllerTestBase
 
     # Test whether the captured response is as we expected
     refute_nil(result)
-    assert_equal('20', @response_catcher.response.raw_body)
+    assert_equal('20.0', @response_catcher.response.raw_body)
   end
 
 end

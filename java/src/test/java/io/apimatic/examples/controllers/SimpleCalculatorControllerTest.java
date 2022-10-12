@@ -80,7 +80,7 @@ public class SimpleCalculatorControllerTest extends BaseControllerTest {
         assertNotNull("Result does not exist", 
                 result);
         assertEquals("Response does not match expected value", 
-            20, result, ASSERT_PRECISION);
+            20.0, result, ASSERT_PRECISION);
     }
 
 }

@@ -66,7 +66,7 @@ namespace APIMATICCalculator.Tests
 
             // Test whether the captured response is as we expected
             Assert.IsNotNull(result, "Result should exist");
-            Assert.AreEqual(20, result, AssertPrecision, "Response should match expected value");
+            Assert.AreEqual(20.0, result, AssertPrecision, "Response should match expected value");
         }
     }
 }
