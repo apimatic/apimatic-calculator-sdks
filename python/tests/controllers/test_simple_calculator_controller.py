@@ -11,7 +11,7 @@ import json
 import dateutil.parser
 
 from tests.controllers.controller_test_base import ControllerTestBase
-from tests.test_helper import TestHelper
+from apimatic_core.utilities.comparison_helper import ComparisonHelper
 from apimaticcalculator.api_helper import APIHelper
 
 
@@ -35,9 +35,9 @@ class SimpleCalculatorControllerTests(ControllerTestBase):
         result = self.controller.get_calculate(options)
 
         # Test response code
-        self.assertEquals(self.response_catcher.response.status_code, 200)
+        assert self.response_catcher.response.status_code == 200
         
         # Test whether the captured response is as we expected
-        self.assertIsNotNone(result)
-        self.assertEqual('20.0', self.response_catcher.response.text)
+        assert result is not None
+        assert '20.0' == self.response_catcher.response.text
 

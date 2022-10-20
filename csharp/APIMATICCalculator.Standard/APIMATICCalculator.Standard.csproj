@@ -10,7 +10,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>APIMATICCalculatorStandard</AssemblyName>
     <Version>1.0.0.0</Version>
-    <Authors></Authors>
+
     <Owners></Owners>
     <Product>APIMATICCalculator.Standard</Product>
     <Copyright>Copyright ©  2019</Copyright>

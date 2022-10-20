@@ -9,12 +9,12 @@ package io.apimatic.examples.controllers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import io.apimatic.core.testing.TestHelper;
 import io.apimatic.examples.APIMATICCalculatorClient;
 import io.apimatic.examples.ApiHelper;
 import io.apimatic.examples.exceptions.ApiException;
 import io.apimatic.examples.models.GetCalculateInput;
 import io.apimatic.examples.models.OperationTypeEnum;
-import io.apimatic.examples.testing.TestHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

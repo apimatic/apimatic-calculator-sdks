@@ -7,9 +7,10 @@
 package io.apimatic.examples.testing;
 
 import io.apimatic.examples.http.client.HttpCallback;
-import io.apimatic.examples.http.client.HttpContext;
 import io.apimatic.examples.http.request.HttpRequest;
 import io.apimatic.examples.http.response.HttpResponse;
+import io.apimatic.coreinterfaces.http.request.Request;
+import io.apimatic.coreinterfaces.http.Context;
 
 /**
  * An HTTPCallback that captures the request and response for use later.
@@ -22,7 +23,7 @@ public class HttpCallbackCatcher implements HttpCallback {
     /**
      * Call back executed before the HTTP request is sent.
      */
-    public void onBeforeRequest(HttpRequest request) {
+    public void onBeforeRequest(Request request) {
         // Nothing to do here
     }
 
@@ -30,9 +31,9 @@ public class HttpCallbackCatcher implements HttpCallback {
      * Call back executed after the HTTP response is received
      * but before the APICallback's handler is called.
      */
-    public void onAfterResponse(HttpContext context) {
-        setRequest(context.getRequest());
-        setResponse(context.getResponse());
+    public void onAfterResponse(Context context) {
+        setRequest((HttpRequest) context.getRequest());
+        setResponse((HttpResponse) context.getResponse());
     }
 
     /**

@@ -10,44 +10,48 @@ declare(strict_types=1);
 
 namespace APIMATICCalculatorLib\Tests;
 
+use Core\Types\CallbackCatcher;
+
 class ClientFactory
 {
-    public static function create(HttpCallBackCatcher $httpCallback): \APIMATICCalculatorLib\APIMATICCalculatorClient
+    public static function create(CallbackCatcher $httpCallback): \APIMATICCalculatorLib\APIMATICCalculatorClient
     {
-        $client = (new \APIMATICCalculatorLib\APIMATICCalculatorClient(static::getConfigurationFromEnvironment()))
-            ->withConfiguration(static::getTestConfiguration($httpCallback));
-        return $client;
+        $clientBuilder = \APIMATICCalculatorLib\APIMATICCalculatorClientBuilder::init();
+        $clientBuilder = self::addConfigurationFromEnvironment($clientBuilder);
+        $clientBuilder = self::addTestConfiguration($clientBuilder);
+        return $clientBuilder->httpCallback($httpCallback)->build();
     }
 
-    public static function getTestConfiguration(HttpCallBackCatcher $httpCallback): array
-    {
-        return ['httpCallback' => $httpCallback];
+    public static function addTestConfiguration(
+        \APIMATICCalculatorLib\APIMATICCalculatorClientBuilder $builder
+    ): \APIMATICCalculatorLib\APIMATICCalculatorClientBuilder {
+        return $builder;
     }
 
-    public static function getConfigurationFromEnvironment(): array
-    {
-        $config = [];
+    public static function addConfigurationFromEnvironment(
+        \APIMATICCalculatorLib\APIMATICCalculatorClientBuilder $builder
+    ): \APIMATICCalculatorLib\APIMATICCalculatorClientBuilder {
         $timeout = getenv('APIMATIC_CALCULATOR_LIB_TIMEOUT');
         $numberOfRetries = getenv('APIMATIC_CALCULATOR_LIB_NUMBER_OF_RETRIES');
         $maximumRetryWaitTime = getenv('APIMATIC_CALCULATOR_LIB_MAXIMUM_RETRY_WAIT_TIME');
         $environment = getenv('APIMATIC_CALCULATOR_LIB_ENVIRONMENT');
 
         if ($timeout !== false && \is_numeric($timeout)) {
-            $config['timeout'] = intval($timeout);
+            $builder->timeout(intval($timeout));
         }
 
         if ($numberOfRetries !== false && \is_numeric($numberOfRetries)) {
-            $config['numberOfRetries'] = intval($numberOfRetries);
+            $builder->numberOfRetries(intval($numberOfRetries));
         }
 
         if ($maximumRetryWaitTime !== false && \is_numeric($maximumRetryWaitTime)) {
-            $config['maximumRetryWaitTime'] = intval($maximumRetryWaitTime);
+            $builder->maximumRetryWaitTime(intval($maximumRetryWaitTime));
         }
 
         if ($environment !== false) {
-            $config['environment'] = $environment;
+            $builder->environment($environment);
         }
 
-        return $config;
+        return $builder;
     }
 }

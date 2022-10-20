@@ -6,23 +6,16 @@
 
 package io.apimatic.examples.controllers;
 
+import io.apimatic.core.ApiCall;
+import io.apimatic.core.GlobalConfiguration;
 import io.apimatic.examples.ApiHelper;
-import io.apimatic.examples.AuthManager;
-import io.apimatic.examples.Configuration;
+import io.apimatic.examples.Server;
 import io.apimatic.examples.exceptions.ApiException;
-import io.apimatic.examples.http.Headers;
-import io.apimatic.examples.http.client.HttpCallback;
-import io.apimatic.examples.http.client.HttpClient;
-import io.apimatic.examples.http.client.HttpContext;
-import io.apimatic.examples.http.request.HttpRequest;
-import io.apimatic.examples.http.response.HttpResponse;
-import io.apimatic.examples.http.response.HttpStringResponse;
+import io.apimatic.examples.http.request.HttpMethod;
 import io.apimatic.examples.models.GetCalculateInput;
 import java.io.IOException;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 /**
  * This class lists all the endpoints of the groups.
@@ -31,25 +24,10 @@ public final class SimpleCalculatorController extends BaseController {
 
     /**
      * Initializes the controller.
-     * @param config    Configurations added in client.
-     * @param httpClient    Send HTTP requests and read the responses.
-     * @param authManagers    Apply authorization to requests.
+     * @param globalConfig    Configurations added in client.
      */
-    public SimpleCalculatorController(Configuration config, HttpClient httpClient,
-            Map<String, AuthManager> authManagers) {
-        super(config, httpClient, authManagers);
-    }
-
-    /**
-     * Initializes the controller with HTTPCallback.
-     * @param config    Configurations added in client.
-     * @param httpClient    Send HTTP requests and read the responses.
-     * @param authManagers    Apply authorization to requests.
-     * @param httpCallback    Callback to be called before and after the HTTP call.
-     */
-    public SimpleCalculatorController(Configuration config, HttpClient httpClient,
-            Map<String, AuthManager> authManagers, HttpCallback httpCallback) {
-        super(config, httpClient, authManagers, httpCallback);
+    public SimpleCalculatorController(GlobalConfiguration globalConfig) {
+        super(globalConfig);
     }
 
     /**
@@ -61,11 +39,7 @@ public final class SimpleCalculatorController extends BaseController {
      */
     public Double getCalculate(
             final GetCalculateInput input) throws ApiException, IOException {
-        HttpRequest request = buildGetCalculateRequest(input);
-        HttpResponse response = getClientInstance().execute(request, false);
-        HttpContext context = new HttpContext(request, response);
-
-        return handleGetCalculateResponse(context);
+        return prepareGetCalculateRequest(input).execute();
     }
 
     /**
@@ -75,71 +49,35 @@ public final class SimpleCalculatorController extends BaseController {
      */
     public CompletableFuture<Double> getCalculateAsync(
             final GetCalculateInput input) {
-        return makeHttpCallAsync(() -> buildGetCalculateRequest(input),
-            request -> getClientInstance().executeAsync(request, false),
-            context -> handleGetCalculateResponse(context));
+        try { 
+            return prepareGetCalculateRequest(input).executeAsync(); 
+        } catch (Exception e) {  
+            throw new CompletionException(e); 
+        }
     }
 
     /**
-     * Builds the HttpRequest object for getCalculate.
+     * Builds the ApiCall object for getCalculate.
      */
-    private HttpRequest buildGetCalculateRequest(
-            final GetCalculateInput input) {
-        //the base uri for api requests
-        String baseUri = config.getBaseUri();
-
-        //prepare query string for API call
-        final StringBuilder queryBuilder = new StringBuilder(baseUri
-                + "/{operation}");
-
-        //process template parameters
-        Map<String, SimpleEntry<Object, Boolean>> templateParameters = new HashMap<>();
-        templateParameters.put("operation",
-                new SimpleEntry<Object, Boolean>(((input.getOperation() != null) ? input.getOperation().value() : null), true));
-        ApiHelper.appendUrlWithTemplateParameters(queryBuilder, templateParameters);
-
-        //load all query parameters
-        Map<String, Object> queryParameters = new HashMap<>();
-        queryParameters.put("x", input.getX());
-        queryParameters.put("y", input.getY());
-
-        //load all headers for the outgoing API request
-        Headers headers = new Headers();
-        headers.add("user-agent", BaseController.userAgent);
-
-        //prepare and invoke the API call request to fetch the response
-        HttpRequest request = getClientInstance().get(queryBuilder, headers, queryParameters,
-                null);
-
-        // Invoke the callback before request if its not null
-        if (getHttpCallback() != null) {
-            getHttpCallback().onBeforeRequest(request);
-        }
-
-        return request;
+    private ApiCall<Double, ApiException> prepareGetCalculateRequest(
+            final GetCalculateInput input) throws IOException {
+        return new ApiCall.Builder<Double, ApiException>()
+                .globalConfig(getGlobalConfiguration())
+                .requestBuilder(requestBuilder -> requestBuilder
+                        .server(Server.CALCULATOR.value())
+                        .path("/{operation}")
+                        .queryParam(param -> param.key("x")
+                                .value(input.getX()).isRequired(false))
+                        .queryParam(param -> param.key("y")
+                                .value(input.getY()).isRequired(false))
+                        .templateParam(param -> param.key("operation").value((input.getOperation() != null) ? input.getOperation().value() : null)
+                                .shouldEncode(true))
+                        .httpMethod(HttpMethod.GET))
+                .responseHandler(responseHandler -> responseHandler
+                        .deserializer(
+                                response -> Double.parseDouble(response))
+                        .nullify404(false)
+                        .globalErrorCase(GLOBAL_ERROR_CASES))
+                .build();
     }
-
-    /**
-     * Processes the response for getCalculate.
-     * @return An object of type double
-     */
-    private Double handleGetCalculateResponse(
-            HttpContext context) throws ApiException, IOException {
-        HttpResponse response = context.getResponse();
-
-        //invoke the callback after response if its not null
-        if (getHttpCallback() != null) {
-            getHttpCallback().onAfterResponse(context);
-        }
-
-        //handle errors defined at the API level
-        validateResponse(response, context);
-
-        //extract result from the http response
-        String responseBody = ((HttpStringResponse) response).getBody();
-        double result = Double.parseDouble(responseBody);
-
-        return result;
-    }
-
 }

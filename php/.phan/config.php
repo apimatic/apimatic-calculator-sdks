@@ -27,7 +27,8 @@ return [
     'directory_list' => [
         'src',
         $vendor_dir . '/apimatic/unirest-php',
-        $vendor_dir . '/apimatic/jsonmapper'
+        $vendor_dir . '/apimatic/core',
+        $vendor_dir . '/apimatic/core-interfaces',
     ],
 
     // A directory list that defines files that will be excluded

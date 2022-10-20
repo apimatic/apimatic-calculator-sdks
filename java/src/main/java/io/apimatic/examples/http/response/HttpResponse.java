@@ -6,6 +6,7 @@
 
 package io.apimatic.examples.http.response;
 
+import io.apimatic.coreinterfaces.http.response.Response;
 import io.apimatic.examples.http.Headers;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Class to hold HTTP Response.
  */
-public class HttpResponse {
+public class HttpResponse implements Response {
 
     /**
      * Private store for properties.
@@ -24,6 +25,7 @@ public class HttpResponse {
     private int statusCode;
     private Headers headers;
     private InputStream rawBody;
+    private String body;
 
     /**
      * Initialization constructor.
@@ -35,6 +37,19 @@ public class HttpResponse {
         this.statusCode = code;
         this.headers = headers;
         this.rawBody = rawBody;
+    }
+
+    /**
+     * Initialization constructor.
+     * 
+     * @param code The HTTP status code
+     * @param headers The HTTP headers read from response
+     * @param rawBody The raw data returned in the HTTP response
+     * @param body String response body
+     */
+    public HttpResponse(int code, Headers headers, InputStream rawBody, String body) {
+        this(code, headers, rawBody);
+        this.body = body;
     }
 
     /**
@@ -65,7 +80,7 @@ public class HttpResponse {
      * String representation for raw body of the http response.
      * @return String
      */
-    protected String getRawBodyString() {
+    public String getRawBodyString() {
         try {
             if (rawBody == null || rawBody.available() == 0 || !rawBody.markSupported()) {
                 return null;
@@ -78,6 +93,15 @@ public class HttpResponse {
         } catch (IOException e) {
             return null;
         }
+    }
+
+    /**
+     * String body of the http response.
+     * 
+     * @return String response body
+     */
+    public String getBody() {
+        return body;
     }
 
     /**
