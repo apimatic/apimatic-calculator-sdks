@@ -10,31 +10,32 @@ declare(strict_types=1);
 
 namespace APIMATICCalculatorLib\Exceptions;
 
+use CoreInterfaces\Sdk\ExceptionInterface;
 use APIMATICCalculatorLib\Http\HttpResponse;
 use APIMATICCalculatorLib\Http\HttpRequest;
 
 /**
  * Thrown when there is a network error or HTTP response status code is not okay.
  */
-class ApiException extends \Exception implements Exception
+class ApiException extends \Exception implements ExceptionInterface
 {
     /**
      * HTTP request
      *
-     * @var \APIMATICCalculatorLib\Http\HttpRequest
+     * @var HttpRequest
      */
     private $request;
 
     /**
      * HTTP response
      *
-     * @var \APIMATICCalculatorLib\Http\HttpResponse|null
+     * @var HttpResponse|null
      */
     private $response;
 
     /**
      * @param string $reason the reason for raising an exception
-     * @param \APIMATICCalculatorLib\Http\HttpRequest $request
+     * @param HttpRequest $request
      */
     public function __construct(string $reason, HttpRequest $request, ?HttpResponse $response = null)
     {

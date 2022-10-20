@@ -11,22 +11,13 @@ declare(strict_types=1);
 namespace APIMATICCalculatorLib\Controllers;
 
 use APIMATICCalculatorLib\Exceptions\ApiException;
-use APIMATICCalculatorLib\ConfigurationInterface;
-use APIMATICCalculatorLib\ApiHelper;
-use APIMATICCalculatorLib\Models;
-use APIMATICCalculatorLib\Http\HttpRequest;
-use APIMATICCalculatorLib\Http\HttpResponse;
-use APIMATICCalculatorLib\Http\HttpMethod;
-use APIMATICCalculatorLib\Http\HttpContext;
-use APIMATICCalculatorLib\Http\HttpCallBack;
+use APIMATICCalculatorLib\Models\OperationTypeEnum;
+use Core\Request\Parameters\QueryParam;
+use Core\Request\Parameters\TemplateParam;
+use CoreInterfaces\Core\Request\RequestMethod;
 
 class SimpleCalculatorController extends BaseController
 {
-    public function __construct(ConfigurationInterface $config, array $authManagers, ?HttpCallBack $httpCallBack)
-    {
-        parent::__construct($config, $authManagers, $httpCallBack);
-    }
-
     /**
      * Calculates the expression using the specified operation.
      *
@@ -38,65 +29,15 @@ class SimpleCalculatorController extends BaseController
      */
     public function getCalculate(array $options): float
     {
-        //prepare query string for API call
-        $_queryUrl = $this->config->getBaseUri() . '/{operation}';
+        $_reqBuilder = $this->requestBuilder(RequestMethod::GET, '/{operation}')
+            ->parameters(
+                TemplateParam::init('operation', $options)
+                    ->extract('operation')
+                    ->serializeBy([OperationTypeEnum::class, 'checkValue']),
+                QueryParam::init('x', $options)->extract('x'),
+                QueryParam::init('y', $options)->extract('y')
+            );
 
-        //process template parameters
-        $_queryUrl = ApiHelper::appendUrlWithTemplateParameters($_queryUrl, [
-            'operation' => Models\OperationTypeEnum::checkValue($this->val($options, 'operation')),
-        ]);
-
-        //process query parameters
-        ApiHelper::appendUrlWithQueryParameters($_queryUrl, [
-            'x'         => $this->val($options, 'x'),
-            'y'         => $this->val($options, 'y'),
-        ]);
-
-        //prepare headers
-        $_headers = [
-            'user-agent'    => self::$userAgent
-        ];
-
-        $_httpRequest = new HttpRequest(HttpMethod::GET, $_headers, $_queryUrl);
-
-        //call on-before Http callback
-        if ($this->getHttpCallBack() != null) {
-            $this->getHttpCallBack()->callOnBeforeRequest($_httpRequest);
-        }
-
-        // and invoke the API call request to fetch the response
-        try {
-            $response = self::$request->get($_httpRequest->getQueryUrl(), $_httpRequest->getHeaders());
-        } catch (\Unirest\Exception $ex) {
-            throw new ApiException($ex->getMessage(), $_httpRequest);
-        }
-
-
-        $_httpResponse = new HttpResponse($response->code, $response->headers, $response->raw_body);
-        $_httpContext = new HttpContext($_httpRequest, $_httpResponse);
-
-        //call on-after Http callback
-        if ($this->getHttpCallBack() != null) {
-            $this->getHttpCallBack()->callOnAfterRequest($_httpContext);
-        }
-
-        //handle errors defined at the API level
-        $this->validateResponse($_httpResponse, $_httpRequest);
-        return $response->body;
-    }
-
-    /**
-     * Array access utility method
-     * @param  array          $arr         Array of values to read from
-     * @param  string         $key         Key to get the value from the array
-     * @param  mixed|null     $default     Default value to use if the key was not found
-     * @return mixed
-     */
-    private function val(array $arr, string $key, $default = null)
-    {
-        if (isset($arr[$key])) {
-            return is_bool($arr[$key]) ? var_export($arr[$key], true) : $arr[$key];
-        }
-        return $default;
+        return $this->execute($_reqBuilder);
     }
 }

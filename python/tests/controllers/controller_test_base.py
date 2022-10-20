@@ -13,6 +13,7 @@ from apimaticcalculator.configuration import Configuration
 from apimaticcalculator.configuration import Environment
 from apimaticcalculator.apimaticcalculator_client import ApimaticcalculatorClient
 
+
 class ControllerTestBase(unittest.TestCase):
 
     """All test classes inherit from this base class. It abstracts out

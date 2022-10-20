@@ -37,11 +37,11 @@ The new console project is the entry point for the eventual execution. This requ
 
 ### 3. Add reference of the library project
 
-In order to use the Tester library in the new project, first we must add a project reference to the `TestConsoleProject`. First, right click on the `References` node in the solution explorer and click `Add Reference...`
+In order to use the `APIMATICCalculator.Standard` library in the new project, first we must add a project reference to the `TestConsoleProject`. First, right click on the `References` node in the solution explorer and click `Add Reference...`
 
 ![Adding a project reference](https://apidocs.io/illustration/cs?workspaceFolder=APIMATIC%20Calculator-CSharp&workspaceName=APIMATICCalculator&projectName=APIMATICCalculator.Standard&rootNamespace=APIMATICCalculator.Standard&step=addReference)
 
-Next, a window will be displayed where we must set the `checkbox` on `Tester.Tests` and click `OK`. By doing this, we have added a reference of the `Tester.Tests` project into the new `TestConsoleProject`.
+Next, a window will be displayed where we must set the `checkbox` on `APIMATICCalculator.Standard` and click `OK`. By doing this, we have added a reference of the `APIMATICCalculator.Standard` project into the new `TestConsoleProject`.
 
 ![Creating a project reference](https://apidocs.io/illustration/cs?workspaceFolder=APIMATIC%20Calculator-CSharp&workspaceName=APIMATICCalculator&projectName=APIMATICCalculator.Standard&rootNamespace=APIMATICCalculator.Standard&step=createReference)
 

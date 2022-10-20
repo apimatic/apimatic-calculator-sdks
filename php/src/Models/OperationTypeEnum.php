@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace APIMATICCalculatorLib\Models;
 
-use APIMATICCalculatorLib\ApiHelper;
+use Core\Utils\CoreHelper;
 use Exception;
 use stdClass;
 
@@ -53,7 +53,9 @@ class OperationTypeEnum
     public static function checkValue($value)
     {
         $value = json_decode(json_encode($value), true); // converts stdClass into array
-        ApiHelper::checkValueInEnum($value, self::class, self::_ALL_VALUES);
-        return $value;
+        if (CoreHelper::checkValueOrValuesInList($value, self::_ALL_VALUES)) {
+            return $value;
+        }
+        throw new Exception("$value is invalid for OperationTypeEnum.");
     }
 }

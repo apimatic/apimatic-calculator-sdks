@@ -3,7 +3,6 @@ __all__ = [
     'apimaticcalculator_client',
     'configuration',
     'controllers',
-    'decorators',
     'exceptions',
     'http',
     'models',

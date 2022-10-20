@@ -6,12 +6,15 @@
 
 package io.apimatic.examples;
 
+import io.apimatic.core.GlobalConfiguration;
+import io.apimatic.coreinterfaces.authentication.Authentication;
+import io.apimatic.coreinterfaces.compatibility.CompatibilityFactory;
+import io.apimatic.coreinterfaces.http.HttpClient;
 import io.apimatic.examples.controllers.SimpleCalculatorController;
 import io.apimatic.examples.http.client.HttpCallback;
-import io.apimatic.examples.http.client.HttpClient;
 import io.apimatic.examples.http.client.HttpClientConfiguration;
-import io.apimatic.examples.http.client.OkClient;
 import io.apimatic.examples.http.client.ReadonlyHttpClientConfiguration;
+import io.apimatic.okhttpclient.adapter.OkClient;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +31,10 @@ public final class APIMATICCalculatorClient implements Configuration {
      * Private store for controllers.
      */
     private SimpleCalculatorController simpleCalculator;
+
+    private static final CompatibilityFactory compatibilityFactory = new CompatibilityFactoryImpl();
+
+    private static String userAgent = "APIMATIC 3.0";
 
     /**
      * Current API environment.
@@ -47,7 +54,8 @@ public final class APIMATICCalculatorClient implements Configuration {
     /**
      * Map of authentication Managers.
      */
-    private Map<String, AuthManager> authManagers;
+    private Map<String, Authentication> authentications;
+
 
     /**
      * Callback to be called before and after the HTTP call for an endpoint is made.
@@ -55,18 +63,23 @@ public final class APIMATICCalculatorClient implements Configuration {
     private final HttpCallback httpCallback;
 
     private APIMATICCalculatorClient(Environment environment, HttpClient httpClient,
-            ReadonlyHttpClientConfiguration httpClientConfig, Map<String, AuthManager> authManagers,
-            HttpCallback httpCallback) {
+            ReadonlyHttpClientConfiguration httpClientConfig,
+            Map<String, Authentication> authentications, HttpCallback httpCallback) {
         this.environment = environment;
         this.httpClient = httpClient;
         this.httpClientConfig = httpClientConfig;
         this.httpCallback = httpCallback;
+        this.authentications = 
+                (authentications == null) ? new HashMap<>() : new HashMap<>(authentications);
 
-        this.authManagers = (authManagers == null) ? new HashMap<>() : new HashMap<>(authManagers);
 
-
-        simpleCalculator = new SimpleCalculatorController(this, this.httpClient, this.authManagers,
-                this.httpCallback);
+        GlobalConfiguration globalConfig = new GlobalConfiguration.Builder()
+                .authentication(this.authentications).compatibilityFactory(compatibilityFactory)
+                .httpClient(httpClient).baseUri(server -> getBaseUri(server))
+                .callback(httpCallback)
+                .userAgent(userAgent)
+                .build();
+        simpleCalculator = new SimpleCalculatorController(globalConfig);
     }
 
     /**
@@ -140,6 +153,18 @@ public final class APIMATICCalculatorClient implements Configuration {
         return getBaseUri(Server.CALCULATOR);
     }
 
+
+    /**
+     * Get base URI by current environment.
+     * 
+     * @param server string for which to get the base URI
+     * @return Processed base URI
+     */
+    public String getBaseUri(String server) {
+        return getBaseUri(Server.fromString(server));
+    }
+
+
     /**
      * Base URLs by environment and server aliases.
      * @param environment Environment for which to get the base URI
@@ -162,7 +187,7 @@ public final class APIMATICCalculatorClient implements Configuration {
     @Override
     public String toString() {
         return "APIMATICCalculatorClient [" + "environment=" + environment + ", httpClientConfig="
-                + httpClientConfig + ", authManagers=" + authManagers + "]";
+                + httpClientConfig + ", authentications=" + authentications + "]";
     }
 
     /**
@@ -174,7 +199,7 @@ public final class APIMATICCalculatorClient implements Configuration {
         Builder builder = new Builder();
         builder.environment = getEnvironment();
         builder.httpClient = getHttpClient();
-        builder.authManagers = authManagers;
+        builder.authentications = authentications;
         builder.httpCallback = httpCallback;
         builder.httpClientConfig(configBldr -> configBldr =
                 ((HttpClientConfiguration) httpClientConfig).newBuilder());
@@ -188,7 +213,7 @@ public final class APIMATICCalculatorClient implements Configuration {
 
         private Environment environment = Environment.PRODUCTION;
         private HttpClient httpClient;
-        private Map<String, AuthManager> authManagers = null;
+        private Map<String, Authentication> authentications = null;
         private HttpCallback httpCallback = null;
         private HttpClientConfiguration.Builder httpClientConfigBuilder =
                 new HttpClientConfiguration.Builder();
@@ -245,10 +270,10 @@ public final class APIMATICCalculatorClient implements Configuration {
          */
         public APIMATICCalculatorClient build() {
             HttpClientConfiguration httpClientConfig = httpClientConfigBuilder.build();
-            httpClient = new OkClient(httpClientConfig);
+            httpClient = new OkClient(httpClientConfig.getConfiguration(), compatibilityFactory);
 
             return new APIMATICCalculatorClient(environment, httpClient, httpClientConfig,
-                    authManagers, httpCallback);
+                    authentications, httpCallback);
         }
     }
 }

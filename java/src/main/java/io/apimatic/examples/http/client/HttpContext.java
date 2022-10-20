@@ -6,13 +6,14 @@
 
 package io.apimatic.examples.http.client;
 
+import io.apimatic.coreinterfaces.http.Context;
 import io.apimatic.examples.http.request.HttpRequest;
 import io.apimatic.examples.http.response.HttpResponse;
 
 /**
  * Class to wrap the request sent to the server and the response received from the server.
  */
-public class HttpContext {
+public class HttpContext implements Context {
     private HttpRequest request;
     private HttpResponse response;
 
