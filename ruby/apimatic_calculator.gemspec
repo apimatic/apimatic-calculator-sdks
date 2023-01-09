@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.version = '1.0.0'
   s.summary = 'apimatic_calculator'
   s.description = 'Simple calculator API hosted on APIMATIC'
-  s.authors = ['APIMatic SDK Generator']
-  s.email = 'support@apimatic.io'
+  s.authors = ['APIMatic SDK Generator',]
+  s.email = ['support@apimatic.io',]
   s.homepage = 'https://apimatic.io'
   s.license = 'MIT'
   s.add_dependency('logging', '~> 2.3')

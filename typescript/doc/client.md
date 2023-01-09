@@ -37,7 +37,7 @@ The API client can be initialized as follows:
 const client = new Client({
   timeout: 0,
   environment: Environment.Production,
-})
+});
 ```
 
 ## APIMATIC Calculator Client

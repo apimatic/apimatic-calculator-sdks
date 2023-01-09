@@ -39,7 +39,7 @@ class BaseController(object):
 
     @staticmethod
     def global_errors():
-        return{
+        return {
             'default': ErrorCase().description('HTTP response not OK.').exception_type(APIException),
         }
 

@@ -27,7 +27,9 @@
   },
   "name": "apimatic-calculatorlib",
   "description": "Simple calculator API hosted on APIMATIC",
-  "author": "APIMATIC SDK Generator",
+  "author": {
+    "name": "APIMATIC SDK Generator"
+  },
   "devDependencies": {
     "stream-equal": "^2.0.1",
     "tsdx": "^0.14.1",

@@ -6,7 +6,7 @@ The following parameters are configurable for the API Client:
 | Parameter | Type | Description |
 |  --- | --- | --- |
 | `environment` | Environment | The API environment. <br> **Default: `Environment.PRODUCTION`** |
-| `httpClientConfig` | `ReadonlyHttpClientConfiguration` | Http Client Configuration instance. |
+| `httpClientConfig` | [`ReadonlyHttpClientConfiguration`](http-client-configuration.md) | Http Client Configuration instance. |
 
 The API client can be initialized as follows:
 
@@ -35,7 +35,7 @@ The gateway for the SDK. This class acts as a factory for the Controllers and al
 | `shutdown()` | Shutdown the underlying HttpClient instance. | `void` |
 | `getEnvironment()` | Current API environment. | `Environment` |
 | `getHttpClient()` | The HTTP Client instance to use for making HTTP requests. | `HttpClient` |
-| `getHttpClientConfig()` | Http Client Configuration instance. | `ReadonlyHttpClientConfiguration` |
+| `getHttpClientConfig()` | Http Client Configuration instance. | [`ReadonlyHttpClientConfiguration`](http-client-configuration.md) |
 | `getBaseUri(Server server)` | Get base URI by current environment | `String` |
 | `getBaseUri()` | Get base URI by current environment | `String` |
 
