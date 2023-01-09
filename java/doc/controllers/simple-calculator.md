@@ -38,6 +38,7 @@ getCalculateInput.setOperation(OperationTypeEnum.MULTIPLY);
 getCalculateInput.setX(222.14);
 getCalculateInput.setY(165.14);
 
+
 simpleCalculatorController.getCalculateAsync(getCalculateInput).thenAccept(result -> {
     // TODO success callback handler
 }).exceptionally(exception -> {

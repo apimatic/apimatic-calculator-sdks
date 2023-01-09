@@ -7,6 +7,8 @@ Simple calculator API hosted on APIMATIC
 
 ## Building
 
+Supported Java version is **8+**.
+
 The generated code uses a few Maven dependencies e.g., Jackson, OkHttp,
 and Apache HttpClient. The reference to these dependencies is already
 added in the pom.xml file will be installed automatically. Therefore,
@@ -90,7 +92,7 @@ The following parameters are configurable for the API Client:
 | Parameter | Type | Description |
 |  --- | --- | --- |
 | `environment` | Environment | The API environment. <br> **Default: `Environment.PRODUCTION`** |
-| `httpClientConfig` | `ReadonlyHttpClientConfiguration` | Http Client Configuration instance. |
+| `httpClientConfig` | [`ReadonlyHttpClientConfiguration`](doc/http-client-configuration.md) | Http Client Configuration instance. |
 
 The API client can be initialized as follows:
 

@@ -9,7 +9,7 @@ Simple calculator API hosted on APIMATIC
 
 ### Requirements
 
-The SDK relies on **Node.js** and **npm** (to resolve dependencies). You can download and install Node.js and [npm](https://www.npmjs.com/) from [the official Node.js website](https://nodejs.org/en/download/).
+The SDK relies on **Node.js** and **npm** (to resolve dependencies). It also requires **Typescript version 3.9+**. You can download and install Node.js and [npm](https://www.npmjs.com/) from [the official Node.js website](https://nodejs.org/en/download/).
 
 > **NOTE:** npm is installed by default when Node.js is installed.
 
@@ -109,7 +109,7 @@ The API client can be initialized as follows:
 const client = new Client({
   timeout: 0,
   environment: Environment.Production,
-})
+});
 ```
 
 ## List of APIs

@@ -34,7 +34,8 @@ class SimpleCalculatorControllerTest extends BaseTestController
     {
         // Parameters for the API call
         $input = [];
-        $input['operation'] = Models\OperationTypeEnum::MULTIPLY;
+        $input['operation'] =
+            Models\OperationTypeEnum::MULTIPLY;
         $input['x'] = 4;
         $input['y'] = 5;
 
@@ -46,11 +47,6 @@ class SimpleCalculatorControllerTest extends BaseTestController
         }
 
         // Assert result with expected response
-        $this->newTestCase($result)
-            ->expectStatus(200)
-            ->bodyMatcher(NativeBodyMatcher::init(
-                (float) 20.0,
-                false, false))
-            ->assert();
+        $this->newTestCase($result)->expectStatus(200)->bodyMatcher(NativeBodyMatcher::init((float) 20.0))->assert();
     }
 }
